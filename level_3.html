@@ -1,0 +1,808 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Level 3 – Coffee Shop Inc (IDR Bulanan)</title>
+<style>
+  :root{
+    --bg:#ffffff; --ink:#0f172a; --muted:#f1f5f9; --panel:#e2e8f0; --line:#cbd5e1;
+    --accent:#2563eb; --ok:#16a34a; --bad:#dc2626; --warn:#f59e0b;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:#ffffff;color:var(--ink);font-family:Inter,system-ui,Segoe UI,Roboto,Arial}
+  header{position:sticky;top:0;z-index:40;background:#ffffff;border-bottom:2px solid var(--line);} 
+  .hd{display:flex;gap:14px;align-items:center;padding:14px 18px}
+  .brand img{width:auto;height:40px;object-fit:contain}
+  h1{margin:0;font-size:18px;font-weight:800;color:#1e3a8a}
+  .wrap{display:grid;grid-template-columns:300px 1fr;min-height:calc(100vh - 64px)}
+  nav{border-right:1px solid var(--line);background:var(--muted)}
+  .nav{display:flex;flex-direction:column;padding:10px}
+  .n{padding:10px 12px;margin:6px 0;border:1px solid var(--line);border-radius:10px;cursor:pointer;background:#ffffff;font-size:13px;color:#1e3a8a;font-weight:600;text-align:left}
+  .n.active{background:#2563eb;color:#ffffff;border-color:#1d4ed8}
+  main{padding:18px;background:#f8fafc}
+  .card{background:#ffffff;border:1px solid var(--line);border-radius:16px;box-shadow:0 4px 10px rgba(0,0,0,.05);color:#1e3a8a}
+  .panel{padding:16px}
+  .grid{display:grid;gap:12px}
+  .g2{grid-template-columns:1fr 1fr}
+  .g3{grid-template-columns:1fr 1fr 1fr}
+  .g4{grid-template-columns:repeat(4,1fr)}
+  .g5{grid-template-columns:repeat(5,1fr)}
+  label{display:block;font-size:12px;opacity:.9;margin-bottom:6px}
+  input,select{width:100%;padding:10px;border-radius:10px;border:1px solid var(--line);
+               background:#ffffff;color:#1e3a8a;font-variant-numeric:tabular-nums}
+  input.currency{text-align:right}
+  .btn{display:inline-block;padding:10px 14px;border-radius:12px;border:1px solid #2563eb;cursor:pointer;font-weight:700}
+  .btn.primary{background:var(--accent);color:#ffffff}
+  .btn.ghost{background:#f1f5f9;color:#1e3a8a}
+  .hint{font-size:12px;opacity:.85}
+  .kpi{display:grid;grid-template-columns:repeat(6,1fr);gap:10px}
+  .k{background:var(--muted);border:1px solid var(--line);border-radius:12px;padding:12px}
+  .k .lb{font-size:11px;opacity:.85}
+  .k .vl{font-weight:800;font-size:18px;margin-top:4px;color:#1e3a8a}
+  table{width:100%;border-collapse:collapse}
+  th,td{border-bottom:1px solid var(--line);padding:10px;text-align:right}
+  th:first-child,td:first-child{text-align:left}
+  .chart{height:240px;display:flex;align-items:flex-end;gap:6px;padding:10px 12px;border-top:1px dashed var(--line)}
+  .bar{width:calc(100%/12 - 6px);background:linear-gradient(180deg,#60a5fa,#1e3a8a);border-radius:6px 6px 0 0}
+  .bar.neg{background:linear-gradient(180deg,#fca5a5,#dc2626)}
+  .stars{display:flex;gap:4px}
+  .star{width:14px;height:14px;clip-path:polygon(50% 0%,61% 35%,98% 35%,68% 57%,79% 91%,50% 70%,21% 91%,32% 57%,2% 35%,39% 35%);
+        background:#cbd5e1}
+  .star.on{background:#2563eb}
+  .pill{display:inline-block;padding:4px 8px;border-radius:999px;border:1px solid var(--line);font-size:11px;background:#e0f2fe;color:#1e3a8a}
+  .flex{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+  .sub{font-weight:700;margin:16px 0 6px}
+  .sep{height:1px;background:var(--line);margin:8px 0}
+</style>
+</head>
+<body>
+<header>
+  <div class="hd">
+    <div class="brand">
+      <img src="logo.png" alt="BBS Logo" />
+    </div>
+    <div>
+      <h1>Business Essentials – Coffee Shop Inc (Level 3, Bulanan, IDR)</h1>
+      <div class="hint">Level 3 menambahkan: multi-toko (Store A & B), mid-year pricing, inventory & stockout, kanal delivery & loyalty, inflasi bulanan, shock kompetitor, serta NPV & BEP.</div>
+    </div>
+  </div>
+</header>
+<div class="wrap">
+  <nav>
+    <div class="nav">
+      <button class="n active" data-page="welcome">Welcome</button>
+      <button class="n" data-page="stores">Stores</button>
+      <button class="n" data-page="products">Products & Pricing</button>
+      <button class="n" data-page="channels">Channels & Loyalty</button>
+      <button class="n" data-page="hr_ops">HR & Ops</button>
+      <button class="n" data-page="inventory">Inventory</button>
+      <button class="n" data-page="finance">Finance & CAPEX</button>
+      <button class="n" data-page="decisions">Decisions</button>
+      <button class="n" data-page="dashboard">Dashboard</button>
+      <button class="n" data-page="glossary">Glossary</button>
+    </div>
+  </nav>
+  <main>
+    <!-- WELCOME -->
+    <section id="welcome" class="card panel">
+      <h2>Welcome</h2>
+      <p>Anda mengelola hingga <b>2 toko</b> selama <b>12 bulan</b> untuk memaksimalkan <b>laba kumulatif</b> dan <b>NPV</b>. Level 3 menuntut Anda mengatur <i>harga semester 1 vs 2, kapasitas per toko, inventori & stockout, kanal delivery (fee & biaya kemasan), loyalitas pelanggan, inflasi COGS/gaji</i>, serta memutuskan <b>ekspansi</b> Store B pada bulan tertentu. <span class="pill">IDR</span> <span class="pill">Bulanan</span></p>
+      <div class="flex">
+        <button class="btn primary" onclick="go('stores')">Mulai ke Stores</button>
+        <span class="hint">Tip: Rencanakan order inventori & kapasitas sebelum promosi besar agar tidak terjadi stockout.</span>
+      </div>
+    </section>
+
+    <!-- STORES -->
+    <section id="stores" class="card panel" style="display:none">
+      <h2>Stores (Lokasi, Jam, Buka Toko B)</h2>
+      <div class="grid g3">
+        <div>
+          <label>Lokasi Store A</label>
+          <select id="locA">
+            <option value="city">City Center</option>
+            <option value="suburb">Suburb</option>
+            <option value="campus">Campus</option>
+          </select>
+        </div>
+        <div>
+          <label>Jam Operasional A</label>
+          <select id="hoursA">
+            <option value="day">Siang</option>
+            <option value="extended">Siang + Malam</option>
+          </select>
+        </div>
+        <div>
+          <label>Sewa Override A (opsional)</label>
+          <input id="rentA" type="text" class="currency" value="0" />
+        </div>
+      </div>
+      <div class="grid g3" style="margin-top:8px">
+        <div>
+          <label>Aktifkan Store B?</label>
+          <select id="openB">
+            <option value="no">Tidak</option>
+            <option value="yes">Ya</option>
+          </select>
+        </div>
+        <div>
+          <label>Bulan Buka Store B (1–12)</label>
+          <input id="openBMonth" type="text" class="currency" value="7" />
+        </div>
+        <div>
+          <label>Lokasi Store B</label>
+          <select id="locB">
+            <option value="city">City Center</option>
+            <option value="suburb">Suburb</option>
+            <option value="campus">Campus</option>
+          </select>
+        </div>
+      </div>
+      <div class="grid g3" style="margin-top:8px">
+        <div>
+          <label>Jam Operasional B</label>
+          <select id="hoursB">
+            <option value="day">Siang</option>
+            <option value="extended">Siang + Malam</option>
+          </select>
+        </div>
+        <div>
+          <label>Sewa Override B (opsional)</label>
+          <input id="rentB" type="text" class="currency" value="0" />
+        </div>
+        <div>
+          <label>Shock Kompetitor (bulan 8–9, -10% demand)</label>
+          <select id="shockOn">
+            <option value="no">Tidak</option>
+            <option value="yes">Aktif</option>
+          </select>
+        </div>
+      </div>
+      <button class="btn primary" onclick="go('products')" style="margin-top:10px">Lanjut ke Products & Pricing</button>
+    </section>
+
+    <!-- PRODUCTS & PRICING -->
+    <section id="products" class="card panel" style="display:none">
+      <h2>Products & Pricing (Regular & Premium, Mid-Year)</h2>
+      <div class="grid g2">
+        <div class="card panel">
+          <div class="sub">Semester 1 (Bulan 1–6)</div>
+          <div class="grid g2">
+            <div>
+              <label>Harga Regular</label>
+              <input id="p_reg_H1" type="text" class="currency" value="25.000" />
+            </div>
+            <div>
+              <label>Harga Premium</label>
+              <input id="p_pre_H1" type="text" class="currency" value="35.000" />
+            </div>
+          </div>
+        </div>
+        <div class="card panel">
+          <div class="sub">Semester 2 (Bulan 7–12)</div>
+          <div class="grid g2">
+            <div>
+              <label>Harga Regular</label>
+              <input id="p_reg_H2" type="text" class="currency" value="26.000" />
+            </div>
+            <div>
+              <label>Harga Premium</label>
+              <input id="p_pre_H2" type="text" class="currency" value="36.000" />
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="grid g4" style="margin-top:10px">
+        <div>
+          <label>COGS Regular (awal)</label>
+          <input id="c_reg" type="text" class="currency" value="9.000" />
+        </div>
+        <div>
+          <label>COGS Premium (awal)</label>
+          <input id="c_pre" type="text" class="currency" value="13.000" />
+        </div>
+        <div>
+          <label>Inflasi COGS (%/bln)</label>
+          <input id="c_infl" type="text" class="currency" value="0,4" />
+        </div>
+        <div>
+          <label>Mix Premium (%)</label>
+          <input id="mix_pre" type="text" class="currency" value="35" />
+        </div>
+      </div>
+      <div class="grid g3" style="margin-top:10px">
+        <div>
+          <label>Elastisitas Harga Regular</label>
+          <input id="e_reg" type="text" class="currency" value="-1,2" />
+        </div>
+        <div>
+          <label>Elastisitas Harga Premium</label>
+          <input id="e_pre" type="text" class="currency" value="-1,0" />
+        </div>
+        <div>
+          <label>Seasonality (12 bln, 1=normal)</label>
+          <input id="season" type="text" value="1,00,0,98,0,99,1,00,1,02,1,05,1,07,1,05,1,03,1,02,1,00,1,08" />
+        </div>
+      </div>
+      <button class="btn primary" onclick="go('channels')" style="margin-top:10px">Lanjut ke Channels & Loyalty</button>
+    </section>
+
+    <!-- CHANNELS & LOYALTY -->
+    <section id="channels" class="card panel" style="display:none">
+      <h2>Channels & Loyalty</h2>
+      <div class="grid g4">
+        <div>
+          <label>Share Delivery (%)</label>
+          <input id="shareDeliv" type="text" class="currency" value="20" />
+        </div>
+        <div>
+          <label>Fee Aggregator (% dari revenue delivery)</label>
+          <input id="aggFee" type="text" class="currency" value="18" />
+        </div>
+        <div>
+          <label>Biaya Kemasan Delivery / unit</label>
+          <input id="packCost" type="text" class="currency" value="2.500" />
+        </div>
+        <div>
+          <label>Boost Demand dari Delivery (%)</label>
+          <input id="delivBoost" type="text" class="currency" value="8" />
+        </div>
+      </div>
+      <div class="grid g4" style="margin-top:8px">
+        <div>
+          <label>Loyalty Participation (%)</label>
+          <input id="loyPart" type="text" class="currency" value="30" />
+        </div>
+        <div>
+          <label>Loyalty Discount (% harga)</label>
+          <input id="loyDisc" type="text" class="currency" value="5" />
+        </div>
+        <div>
+          <label>Reduksi Sensitivitas Harga via Loyalty (beta)</label>
+          <input id="loyBeta" type="text" class="currency" value="0,25" />
+        </div>
+        <div>
+          <label>Competitor Price Index</label>
+          <input id="compIdx" type="text" class="currency" value="1,00" />
+        </div>
+      </div>
+      <button class="btn primary" onclick="go('hr_ops')" style="margin-top:10px">Lanjut ke HR & Ops</button>
+    </section>
+
+    <!-- HR & OPS -->
+    <section id="hr_ops" class="card panel" style="display:none">
+      <h2>HR & Operations (per Toko)</h2>
+      <div class="grid g4">
+        <div>
+          <label>Gaji / orang / bln</label>
+          <input id="salary" type="text" class="currency" value="4.600.000" />
+        </div>
+        <div>
+          <label>Inflasi Gaji (%/bln)</label>
+          <input id="salInfl" type="text" class="currency" value="0,2" />
+        </div>
+        <div>
+          <label>Training / orang / bln</label>
+          <input id="training" type="text" class="currency" value="350.000" />
+        </div>
+        <div>
+          <label>Overtime Multiplier</label>
+          <input id="otMul" type="text" class="currency" value="1,25" />
+        </div>
+      </div>
+      <div class="grid g4" style="margin-top:8px">
+        <div>
+          <label>Staf A (org)</label>
+          <input id="staffA" type="text" class="currency" value="4" />
+        </div>
+        <div>
+          <label>Staf B (org)</label>
+          <input id="staffB" type="text" class="currency" value="3" />
+        </div>
+        <div>
+          <label>Kapasitas per Staf per Jam</label>
+          <input id="capPerStaff" type="text" class="currency" value="18" />
+        </div>
+        <div>
+          <label>Jam/Hari Siang &plus; Malam</label>
+          <input id="hoursDay" type="text" class="currency" value="15" />
+        </div>
+      </div>
+      <div class="grid g4" style="margin-top:8px">
+        <div>
+          <label>Kecepatan Mesin (cangkir/jam/mesin)</label>
+          <input id="capMachine" type="text" class="currency" value="28" />
+        </div>
+        <div>
+          <label>Mesin A</label>
+          <input id="nMachineA" type="text" class="currency" value="1" />
+        </div>
+        <div>
+          <label>Mesin B</label>
+          <input id="nMachineB" type="text" class="currency" value="1" />
+        </div>
+        <div>
+          <label>Estimasi Penjualan/Hari (baseline per toko)</label>
+          <input id="salesPerDay" type="text" class="currency" value="160" />
+        </div>
+      </div>
+      <button class="btn primary" onclick="go('inventory')" style="margin-top:10px">Lanjut ke Inventory</button>
+    </section>
+
+    <!-- INVENTORY -->
+    <section id="inventory" class="card panel" style="display:none">
+      <h2>Inventory (Global untuk 2 Toko)</h2>
+      <div class="grid g4">
+        <div>
+          <label>Persediaan Awal Regular (unit)</label>
+          <input id="invReg0" type="text" class="currency" value="2.500" />
+        </div>
+        <div>
+          <label>Persediaan Awal Premium (unit)</label>
+          <input id="invPre0" type="text" class="currency" value="1.500" />
+        </div>
+        <div>
+          <label>Order/Bulan Regular (unit)</label>
+          <input id="ordReg" type="text" class="currency" value="2.000" />
+        </div>
+        <div>
+          <label>Order/Bulan Premium (unit)</label>
+          <input id="ordPre" type="text" class="currency" value="1.200" />
+        </div>
+      </div>
+      <div class="grid g4" style="margin-top:8px">
+        <div>
+          <label>Lead Time Order (bulan)</label>
+          <input id="lead" type="text" class="currency" value="1" />
+        </div>
+        <div>
+          <label>Holding Cost / unit / bln</label>
+          <input id="holdCost" type="text" class="currency" value="200" />
+        </div>
+        <div>
+          <label>Stockout Penalty / unit</label>
+          <input id="soPenalty" type="text" class="currency" value="500" />
+        </div>
+        <div>
+          <label>Waste Rate (%)</label>
+          <input id="wasteRate" type="text" class="currency" value="2" />
+        </div>
+      </div>
+      <button class="btn primary" onclick="go('finance')" style="margin-top:10px">Lanjut ke Finance & CAPEX</button>
+    </section>
+
+    <!-- FINANCE -->
+    <section id="finance" class="card panel" style="display:none">
+      <h2>Finance & CAPEX</h2>
+      <div class="grid g4">
+        <div>
+          <label>Promosi / bln (global)</label>
+          <input id="promo" type="text" class="currency" value="4.500.000" />
+        </div>
+        <div>
+          <label>Overhead / bln (admin & dep.)</label>
+          <input id="overhead" type="text" class="currency" value="2.500.000" />
+        </div>
+        <div>
+          <label>PPN 11% Dikenakan?</label>
+          <select id="ppnOn"><option value="yes">Ya</option><option value="no">Tidak</option></select>
+        </div>
+        <div>
+          <label>Discount Rate (%/thn) untuk NPV</label>
+          <input id="discRate" type="text" class="currency" value="12" />
+        </div>
+      </div>
+      <div class="card panel" style="margin-top:10px">
+        <div class="sub">CAPEX Store B (opsional saat membuka)</div>
+        <div class="grid g5">
+          <div>
+            <label>CAPEX (IDR)</label>
+            <input id="capexB" type="text" class="currency" value="60.000.000" />
+          </div>
+          <div>
+            <label>Pendanaan Hutang? (bunga %/thn)</label>
+            <input id="loanRate" type="text" class="currency" value="12" />
+          </div>
+          <div>
+            <label>Tenor (bulan)</label>
+            <input id="loanTenor" type="text" class="currency" value="12" />
+          </div>
+          <div>
+            <label>Tambah Mesin B (+unit)</label>
+            <input id="capexAddMB" type="text" class="currency" value="1" />
+          </div>
+          <div>
+            <label>Biaya Instalasi (sekali)</label>
+            <input id="installCost" type="text" class="currency" value="5.000.000" />
+          </div>
+        </div>
+      </div>
+      <button class="btn primary" onclick="go('decisions')" style="margin-top:10px">Lanjut ke Decisions</button>
+    </section>
+
+    <!-- DECISIONS -->
+    <section id="decisions" class="card panel" style="display:none">
+      <h2>Decisions</h2>
+      <div class="grid g3">
+        <div>
+          <label>Efektivitas Promo (alpha)</label>
+          <input id="promoAlpha" type="text" class="currency" value="0,20" />
+        </div>
+        <div>
+          <label>Efek Training ke Layanan (0–0,3)</label>
+          <input id="trainAlpha" type="text" class="currency" value="0,18" />
+        </div>
+        <div>
+          <label>Kompetitor Shock % (bulan 8–9)</label>
+          <input id="shockPct" type="text" class="currency" value="-10" />
+        </div>
+      </div>
+      <div class="flex" style="margin-top:12px">
+        <button class="btn primary" onclick="runSim()">Jalankan Simulasi 12 Bulan</button>
+        <button class="btn ghost" onclick="resetAll()">Reset</button>
+        <span class="hint">Output: penjualan per toko & produk, stockout, PPN, arus kas, profit kumulatif, NPV & bulan BEP.</span>
+      </div>
+    </section>
+
+    <!-- DASHBOARD -->
+    <section id="dashboard" class="card panel" style="display:none">
+      <h2>Dashboard</h2>
+      <div class="kpi" style="margin-bottom:12px">
+        <div class="k"><div class="lb">Total Penjualan</div><div class="vl" id="k_rev">IDR 0</div></div>
+        <div class="k"><div class="lb">Total Biaya</div><div class="vl" id="k_cost">IDR 0</div></div>
+        <div class="k"><div class="lb">Laba/Rugi Neto</div><div class="vl" id="k_profit">IDR 0</div></div>
+        <div class="k"><div class="lb">Margin Bersih</div><div class="vl" id="k_margin">0%</div></div>
+        <div class="k"><div class="lb">Kas Akhir</div><div class="vl" id="k_cash">IDR 0</div></div>
+        <div class="k"><div class="lb">NPV (12 bln)</div><div class="vl" id="k_npv">IDR 0</div></div>
+      </div>
+      <div class="grid g2" style="margin-bottom:8px">
+        <div class="k">
+          <div class="lb">Employee Satisfaction</div>
+          <div class="stars" id="empStars"></div>
+        </div>
+        <div class="k">
+          <div class="lb">Customer Satisfaction</div>
+          <div class="stars" id="custStars"></div>
+        </div>
+      </div>
+
+      <div class="lb" style="margin:8px 0 0 2px">Grafik Profit Bulanan</div>
+      <div id="chart" class="chart"></div>
+      <div class="lb" style="margin:8px 0 0 2px">Grafik Profit Kumulatif</div>
+      <div id="cumChart" class="chart"></div>
+      <div class="lb" style="margin:8px 0 0 2px">Grafik Arus Kas Bulanan</div>
+      <div id="cashChart" class="chart"></div>
+
+      <div class="panel" style="padding-left:0;padding-right:0">
+        <div style="overflow:auto">
+          <table id="tbl"><thead>
+            <tr>
+              <th>Bulan</th>
+              <th>Reg A</th>
+              <th>Pre A</th>
+              <th>Reg B</th>
+              <th>Pre B</th>
+              <th>Lost Cap</th>
+              <th>Lost Stock</th>
+              <th>Pendapatan</th>
+              <th>PPN</th>
+              <th>Total Biaya</th>
+              <th>Laba Bersih</th>
+              <th>Profit Kumulatif</th>
+              <th>Kas</th>
+              <th>Inv Akhir (R/P)</th>
+            </tr></thead><tbody></tbody></table>
+        </div>
+        <div class="hint" id="bepNote" style="margin-top:6px"></div>
+      </div>
+    </section>
+
+    <!-- GLOSSARY -->
+    <section id="glossary" class="card panel" style="display:none">
+      <h2>Glossary (Level 3)</h2>
+      <ul>
+        <li><b>Mid-year pricing:</b> kebijakan harga S1 vs S2 untuk merespons inflasi & kompetisi.</li>
+        <li><b>Inventory:</b> order dengan <b>lead time</b>, biaya simpan, dan <b>stockout</b> yang menyebabkan lost sales tambahan.</li>
+        <li><b>Delivery channel:</b> meningkatkan jangkauan (boost) tetapi ada fee dan biaya kemasan.</li>
+        <li><b>Loyalty:</b> diskon pada sebagian transaksi sekaligus menurunkan sensitivitas harga.</li>
+        <li><b>NPV & BEP:</b> NPV menghitung nilai kini arus kas; BEP adalah bulan saat profit kumulatif ≥ 0.</li>
+      </ul>
+    </section>
+  </main>
+</div>
+
+<script>
+(function(){
+  // Helpers
+  const fmt = v => new Intl.NumberFormat('id-ID', {style:'currency', currency:'IDR', maximumFractionDigits:0}).format(v||0);
+  const clamp=(x,a,b)=>Math.max(a,Math.min(b,x));
+  const toNum = (id)=>{ const el=document.getElementById(id); if(!el) return 0; const s=el.value.replaceAll('.', '').replace(/,/g,'.').replace(/[^0-9.\-]/g,''); return s?parseFloat(s):0; };
+
+  // Lokasi baseline (selaras Level 1–2)
+  const LOC={
+    city:{ name:'City', rent:55000000, refPriceReg:26000, refPricePre:32000, baseDemand:10000, priceElasticityReg:-1.2, priceElasticityPre:-1.0, evening:1.10, salaryMarket:4600000 },
+    suburb:{ name:'Suburb', rent:22000000, refPriceReg:23000, refPricePre:30000, baseDemand:7000, priceElasticityReg:-1.2, priceElasticityPre:-1.0, evening:1.05, salaryMarket:4400000 },
+    campus:{ name:'Campus', rent:8000000,  refPriceReg:20000, refPricePre:27000, baseDemand:9000, priceElasticityReg:-1.6, priceElasticityPre:-1.2, evening:1.08, salaryMarket:4200000 }
+  };
+
+  // Routing
+  const pages=['welcome','stores','products','channels','hr_ops','inventory','finance','decisions','dashboard','glossary'];
+  const buttons=document.querySelectorAll('.n');
+  function go(id){
+    pages.forEach(p=>{
+      const sec=document.getElementById(p);
+      if(sec) sec.style.display = (p===id)?'block':'none';
+      buttons.forEach(b=>{ if(b.dataset.page===id) b.classList.add('active'); else if(b.dataset.page) b.classList.remove('active');});
+    });
+  }
+  window.go=go; buttons.forEach(b=> b.addEventListener('click',()=>go(b.dataset.page)));
+
+  function stars(el,score){ el.innerHTML=''; const n = clamp(Math.round(score),0,5); for(let i=0;i<5;i++){ const s=document.createElement('div'); s.className='star'+(i<n?' on':''); el.appendChild(s);} }
+  function annuityPayment(P, r_annual, n_month){ if(P<=0||n_month<=0) return 0; const r=(r_annual/100)/12; if(r===0) return P/n_month; return P*(r*Math.pow(1+r,n_month))/(Math.pow(1+r,n_month)-1); }
+
+  function runSim(){
+    // STORES
+    const A = LOC[ document.getElementById('locA').value ];
+    const hoursA = document.getElementById('hoursA').value;
+    const rentA = toNum('rentA')>0? toNum('rentA'): A.rent;
+    const openB = document.getElementById('openB').value==='yes';
+    const openBMonth = Math.max(1, Math.min(12, Math.round(toNum('openBMonth')||12)));
+    const B = LOC[ document.getElementById('locB').value ];
+    const hoursB = document.getElementById('hoursB').value;
+    const rentB = toNum('rentB')>0? toNum('rentB'): B.rent;
+    const shockOn = document.getElementById('shockOn').value==='yes';
+
+    // PRODUCTS & PRICING
+    const p_reg_H1 = toNum('p_reg_H1'); const p_pre_H1 = toNum('p_pre_H1');
+    const p_reg_H2 = toNum('p_reg_H2'); const p_pre_H2 = toNum('p_pre_H2');
+    const c_reg0 = toNum('c_reg'); const c_pre0 = toNum('c_pre');
+    const c_infl = toNum('c_infl')/100; // monthly inflation
+    const mix_pre = clamp(toNum('mix_pre')/100,0,1);
+    const e_reg_in = toNum('e_reg'); const e_pre_in = toNum('e_pre');
+    const season = document.getElementById('season').value.split(',').map(s=>parseFloat(s.trim().replace(/\s/g,'').replace(/\,(?=\d)/g,'.'))||1);
+    while(season.length<12) season.push(1); if(season.length>12) season.length=12;
+
+    // CHANNELS & LOYALTY
+    const shareDeliv = clamp(toNum('shareDeliv')/100,0,1); const aggFee = toNum('aggFee')/100; const packCost = toNum('packCost'); const delivBoost = toNum('delivBoost')/100;
+    const loyPart = clamp(toNum('loyPart')/100,0,1); const loyDisc = toNum('loyDisc')/100; const loyBeta = toNum('loyBeta');
+    const compIdx = Math.max(0.7, Math.min(1.3, toNum('compIdx')||1));
+
+    // HR & OPS
+    let salary0 = toNum('salary'); const salInfl = toNum('salInfl')/100; const training = toNum('training'); const otMul = Math.max(1, toNum('otMul'));
+    let staffA = Math.max(1, Math.round(toNum('staffA'))); let staffB = Math.max(0, Math.round(toNum('staffB')));
+    const capPerStaff = Math.max(5, toNum('capPerStaff')); const hoursDay = Math.max(8, toNum('hoursDay')); const capMachine = Math.max(5, toNum('capMachine'));
+    let nMachineA = Math.max(1, Math.round(toNum('nMachineA'))); let nMachineB = Math.max(0, Math.round(toNum('nMachineB')));
+    const salesPerDay = Math.max(0, toNum('salesPerDay'));
+
+    // INVENTORY
+    let invReg = Math.max(0, Math.round(toNum('invReg0'))); let invPre = Math.max(0, Math.round(toNum('invPre0')));
+    const ordReg = Math.max(0, Math.round(toNum('ordReg'))); const ordPre = Math.max(0, Math.round(toNum('ordPre')));
+    const lead = Math.max(0, Math.round(toNum('lead'))); const holdCost = Math.max(0, toNum('holdCost')); const soPenalty = Math.max(0, toNum('soPenalty')); const wasteRate = clamp(toNum('wasteRate')/100,0,0.2);
+
+    // FINANCE
+    const promo = toNum('promo'); const overhead = toNum('overhead'); const ppnOn = document.getElementById('ppnOn').value==='yes';
+    const discRate = toNum('discRate')/100; const r_month = Math.pow(1+discRate,1/12)-1;
+    const capexB = Math.max(0, toNum('capexB')); const loanRate = Math.max(0, toNum('loanRate')); const loanTenor = Math.max(0, Math.round(toNum('loanTenor'))); const capexAddMB = Math.max(0, Math.round(toNum('capexAddMB'))); const installCost = Math.max(0, toNum('installCost'));
+
+    // DECISIONS
+    const promoAlpha = Math.max(0, toNum('promoAlpha')); const trainAlpha = clamp(toNum('trainAlpha'),0,0.3); const shockPct = toNum('shockPct')/100;
+
+    // Derived
+    const fHoursA = (hoursA==='extended')? A.evening:1.0; const fHoursB = (hoursB==='extended')? B.evening:1.0;
+
+    // Loan payment for Store B CAPEX
+    const payLoan = (capexB>0 && loanTenor>0)? annuityPayment(capexB, loanRate, loanTenor): 0;
+
+    const rows=[]; let cum=0, totalRev=0, totalCost=0, maxAbs=1, cash=0, maxCum=1, npv=0, bepMonth=null;
+
+    for(let m=0;m<12;m++){
+      const isH2 = (m>=6); // months 7-12
+      const p_reg = isH2? p_reg_H2 : p_reg_H1; const p_pre = isH2? p_pre_H2 : p_pre_H1;
+      // Loyalty modifies effective price & elasticity
+      const e_reg = (e_reg_in|| (isH2? A.priceElasticityReg: A.priceElasticityReg)) * (1 - loyBeta*loyPart);
+      const e_pre = (e_pre_in|| (isH2? A.priceElasticityPre: A.priceElasticityPre)) * (1 - loyBeta*loyPart);
+
+      // Inflated COGS & salary
+      const c_reg = c_reg0 * Math.pow(1+c_infl, m); const c_pre = c_pre0 * Math.pow(1+c_infl, m);
+      const salary = salary0 * Math.pow(1+salInfl, m);
+
+      // Quality & satisfaction proxies
+      const fSalaryA = clamp(0.8 + 0.30 * (salary / A.salaryMarket), 0.8, 1.25);
+      const fSalaryB = clamp(0.8 + 0.30 * (salary / B.salaryMarket), 0.8, 1.25);
+      const fTraining = clamp(0.9 + (training/400000)*trainAlpha, 0.9, 1.25);
+
+      // Promo & competitor effects
+      const promoRef = 4000000; const fPromo = 1 + promoAlpha * ((promo / (promoRef||1)) - 1);
+      const fComp = clamp(1 + (1 - compIdx)*0.8, 0.7, 1.3);
+      const fShock = (shockOn && (m===7||m===8)) ? (1+shockPct) : 1; // bulan 8-9 index 7-8
+
+      // Demand base per store
+      const baseMonthlyA = (salesPerDay>0 ? salesPerDay*30 : A.baseDemand);
+      const baseMonthlyB = (salesPerDay>0 ? salesPerDay*30 : B.baseDemand);
+      const seasonF = season[m]||1; const delivF = 1 + delivBoost;
+
+      // Price effects per product
+      const fPriceReg = Math.pow(p_reg / A.refPriceReg, e_reg);
+      const fPricePre = Math.pow(p_pre / A.refPricePre, e_pre);
+
+      // Demand per store before capacity
+      const demandA_base = baseMonthlyA * seasonF * fHoursA * fSalaryA * fTraining * fPromo * fComp * fShock * delivF;
+      const demandB_base = (openB && (m+1)>=openBMonth) ? (baseMonthlyB * seasonF * fHoursB * fSalaryB * fTraining * fPromo * fComp * fShock * delivF) : 0;
+
+      let demandRegA = demandA_base * (1 - mix_pre) * fPriceReg;
+      let demandPreA = demandA_base * (mix_pre) * fPricePre;
+      let demandRegB = demandB_base * (1 - mix_pre) * fPriceReg;
+      let demandPreB = demandB_base * (mix_pre) * fPricePre;
+
+      // Capacity per store
+      const hoursPerDayA = (hoursA==='extended')? 15:10; const hoursPerDayB = (hoursB==='extended')? 15:10;
+      const capPerHourA = Math.min(staffA*capPerStaff, nMachineA*capMachine);
+      const capPerHourB = Math.min(staffB*capPerStaff, nMachineB*capMachine);
+      const monthlyCapA = Math.max(0, Math.round(capPerHourA * hoursPerDayA * 30));
+      const monthlyCapB = Math.max(0, Math.round(capPerHourB * hoursPerDayB * 30));
+
+      // Serve vs capacity
+      const totDemA = Math.round(demandRegA + demandPreA); const capServeA = Math.min(totDemA, monthlyCapA);
+      const totDemB = Math.round(demandRegB + demandPreB); const capServeB = Math.min(totDemB, monthlyCapB);
+      const lostCap = Math.max(0, (totDemA - capServeA) + (totDemB - capServeB));
+
+      // Split served by proportions
+      const servedPreA = Math.round(capServeA * (demandPreA/(totDemA||1))); const servedRegA = capServeA - servedPreA;
+      const servedPreB = Math.round(capServeB * (demandPreB/(totDemB||1))); const servedRegB = capServeB - servedPreB;
+
+      // Inventory constraint (global)
+      const needReg = servedRegA + servedRegB; const needPre = servedPreA + servedPreB;
+      const availableReg = Math.min(invReg, needReg); const availablePre = Math.min(invPre, needPre);
+      const stockoutReg = Math.max(0, needReg - availableReg); const stockoutPre = Math.max(0, needPre - availablePre);
+
+      const finalRegA = Math.round(servedRegA * (availableReg/(needReg||1))); const finalRegB = availableReg - finalRegA;
+      const finalPreA = Math.round(servedPreA * (availablePre/(needPre||1))); const finalPreB = availablePre - finalPreA;
+
+      // Waste & inventory update
+      const wasteReg = Math.round((finalRegA+finalRegB) * wasteRate); const wastePre = Math.round((finalPreA+finalPreB) * wasteRate);
+      invReg = Math.max(0, invReg - (finalRegA+finalRegB) - wasteReg); invPre = Math.max(0, invPre - (finalPreA+finalPreB) - wastePre);
+
+      // Place orders that will arrive after lead months
+      if(lead===0){ invReg += ordReg; invPre += ordPre; }
+
+      // Delivery split & loyalty pricing impact
+      const totalUnits = finalRegA+finalRegB+finalPreA+finalPreB;
+      const unitsDeliv = Math.round(totalUnits * shareDeliv); const unitsDine = totalUnits - unitsDeliv;
+      const effPriceReg = p_reg * (1 - loyDisc*loyPart); const effPricePre = p_pre * (1 - loyDisc*loyPart);
+
+      // Revenue
+      const rev = (finalRegA+finalRegB)*effPriceReg + (finalPreA+finalPreB)*effPricePre;
+      const ppn = ppnOn ? 0.11*rev : 0;
+
+      // Costs
+      const cogs = (finalRegA+finalRegB+wasteReg)*c_reg + (finalPreA+finalPreB+wastePre)*c_pre;
+      const rent = rentA + (openB && (m+1)>=openBMonth ? rentB : 0);
+      // Staffing need and overtime proxy (jika demand mendekati kapasitas maksimum → lembur)
+      const utilA = (monthlyCapA>0? capServeA/monthlyCapA : 0); const utilB = (monthlyCapB>0? capServeB/monthlyCapB : 0);
+      const otCost = (utilA>0.9? (utilA-0.9)*0.5*staffA*salary*(otMul-1) : 0) + (utilB>0.9? (utilB-0.9)*0.5*staffB*salary*(otMul-1) : 0);
+      const hrCost = (staffA+ (openB && (m+1)>=openBMonth? staffB:0)) * (salary + training) + otCost;
+      const delivFee = aggFee * (rev * shareDeliv); const pack = unitsDeliv * packCost;
+      const invHold = holdCost * (invReg + invPre); const stockoutPenalty = soPenalty * (stockoutReg + stockoutPre);
+
+      // Loan & CAPEX on opening month B
+      let capexOut = 0, loanPay = 0; let capAdd = 0;
+      if(openB && (m+1)===openBMonth){
+        if(loanTenor>0){ loanPay = payLoan; } else { capexOut = capexB; }
+        capAdd = capexAddMB; // add machines to B
+        nMachineB += capAdd;
+      }
+      if(openB && loanTenor>0 && (m+1)>=openBMonth && (m+1) < openBMonth + loanTenor){ loanPay = payLoan; }
+      const install = (openB && (m+1)===openBMonth)? installCost : 0;
+
+      const cost = cogs + rent + promo + overhead + hrCost + delivFee + pack + invHold + stockoutPenalty + loanPay + capexOut + install + ppn;
+      const profit = rev - cost; cum += profit; cash += (rev - (cost - ppn));
+      maxAbs = Math.max(maxAbs, Math.abs(profit)); maxCum = Math.max(maxCum, Math.abs(cum));
+      totalRev += rev; totalCost += cost;
+
+      // NPV accumulation
+      const cf = (rev - (cost - ppn)); npv += cf / Math.pow(1+r_month, m+1);
+
+      // Employee & customer satisfaction (bulan terakhir sebagai proxy di KPI)
+      const staffingNeedA = (hoursA==='extended')?4:3; const staffingNeedB = (hoursB==='extended')?4:3;
+      const loadA = staffingNeedA / Math.max(1,staffA); const loadB = staffingNeedB / Math.max(1,(openB && (m+1)>=openBMonth? staffB:0));
+      const empSat = clamp( 2.5 + 2.0*(salary/A.salaryMarket - 1) + 0.8*(training/400000 - 1) - 0.6*(Math.max(loadA,loadB)-1), 0, 5);
+      const priceDeltaR = (p_reg - A.refPriceReg)/A.refPriceReg; const priceDeltaP = (p_pre - A.refPricePre)/A.refPricePre;
+      const quality = 0.2 + 0.15*mix_pre;
+      const waitPenalty = clamp(lostCap / Math.max(1, (totDemA+totDemB)), 0, 0.7);
+      const custSat = clamp( 2.0 + 0.6*empSat - 1.0*(0.5*priceDeltaR+0.5*priceDeltaP) + quality - 1.2*waitPenalty, 0, 5);
+
+      // Track orders scheduled arrival
+      // simple pipeline: add previous orders when lead>0
+      if(lead>0){
+        // For simplicity, arrival occurs exactly after 'lead' months; we push into a queue
+        window._qR = window._qR || []; window._qP = window._qP || [];
+        window._qR[m+lead] = (window._qR[m+lead]||0) + ordReg;
+        window._qP[m+lead] = (window._qP[m+lead]||0) + ordPre;
+      }
+      // Receive arrivals scheduled for this month
+      if(window._qR && window._qR[m]) invReg += window._qR[m];
+      if(window._qP && window._qP[m]) invPre += window._qP[m];
+
+      if(bepMonth===null && cum>=0) bepMonth = m+1;
+
+      rows.push({
+        month:m+1,
+        regA:finalRegA, preA:finalPreA, regB:finalRegB, preB:finalPreB,
+        lostCap, lostStock:(stockoutReg+stockoutPre),
+        revenue:rev, ppn, cost, profit, cum, cash,
+        empSat, custSat,
+        invEndR:invReg, invEndP:invPre
+      });
+    }
+
+    // KPI
+    document.getElementById('k_rev').textContent = fmt(totalRev);
+    document.getElementById('k_cost').textContent = fmt(totalCost);
+    document.getElementById('k_profit').textContent = fmt(cum);
+    document.getElementById('k_margin').textContent = (totalRev>0? (100*cum/totalRev).toFixed(1):0)+"%";
+    document.getElementById('k_cash').textContent = fmt(rows[rows.length-1].cash);
+    document.getElementById('k_npv').textContent = fmt(npv);
+    document.getElementById('bepNote').textContent = bepMonth? (`Break-even pada bulan ${bepMonth}.`) : 'Belum break-even dalam 12 bulan.';
+
+    stars(document.getElementById('empStars'), rows[rows.length-1].empSat);
+    stars(document.getElementById('custStars'), rows[rows.length-1].custSat);
+
+    // Charts
+    const chart=document.getElementById('chart'); chart.innerHTML='';
+    const cumChart=document.getElementById('cumChart'); cumChart.innerHTML='';
+    const cashChart=document.getElementById('cashChart'); cashChart.innerHTML='';
+    let maxCash=1; rows.forEach(r=>{ maxCash=Math.max(maxCash, Math.abs(r.cash)); });
+
+    rows.forEach(r=>{
+      const b=document.createElement('div'); b.className='bar'+(r.profit<0?' neg':''); b.style.height=(10+Math.round(200*Math.abs(r.profit)/Math.max(1,Math.max(...rows.map(x=>Math.abs(x.profit))))))+'px'; b.title=`Bulan ${r.month}: ${fmt(r.profit)}`; chart.appendChild(b);
+      const c=document.createElement('div'); c.className='bar'+(r.cum<0?' neg':''); c.style.height=(10+Math.round(200*Math.abs(r.cum)/Math.max(1,Math.max(...rows.map(x=>Math.abs(x.cum))))))+'px'; c.title=`Kumulatif s/d Bulan ${r.month}: ${fmt(r.cum)}`; cumChart.appendChild(c);
+      const k=document.createElement('div'); k.className='bar'+(r.cash<0?' neg':''); k.style.height=(10+Math.round(200*Math.abs(r.cash)/maxCash))+'px'; k.title=`Kas Bulan ${r.month}: ${fmt(r.cash)}`; cashChart.appendChild(k);
+    });
+
+    // Table
+    const tb=document.querySelector('#tbl tbody'); tb.innerHTML='';
+    rows.forEach(r=>{
+      const tr=document.createElement('tr');
+      tr.innerHTML = `<td>Bulan ${r.month}</td>
+        <td>${r.regA.toLocaleString('id-ID')}</td>
+        <td>${r.preA.toLocaleString('id-ID')}</td>
+        <td>${r.regB.toLocaleString('id-ID')}</td>
+        <td>${r.preB.toLocaleString('id-ID')}</td>
+        <td style="color:${r.lostCap>0?'#f59e0b':'#1e3a8a'}">${r.lostCap.toLocaleString('id-ID')}</td>
+        <td style="color:${r.lostStock>0?'#f59e0b':'#1e3a8a'}">${r.lostStock.toLocaleString('id-ID')}</td>
+        <td>${fmt(r.revenue)}</td>
+        <td>${fmt(r.ppn)}</td>
+        <td>${fmt(r.cost)}</td>
+        <td style="color:${r.profit>=0?'#34d399':'#f87171'}">${fmt(r.profit)}</td>
+        <td>${fmt(r.cum)}</td>
+        <td>${fmt(r.cash)}</td>
+        <td>${r.invEndR.toLocaleString('id-ID')} / ${r.invEndP.toLocaleString('id-ID')}</td>`;
+      tb.appendChild(tr);
+    });
+
+    go('dashboard');
+  }
+  window.runSim=runSim;
+
+  function resetAll(){ window.location.reload(); }
+  window.resetAll=resetAll;
+})();
+</script>
+<script>
+// Formatter angka ribuan & desimal untuk input.currency
+function formatCurrencyInput(input){
+  input.addEventListener('input', function(){
+    let val = this.value.replace(/[^0-9.,\-]/g,'');
+    const parts = val.split(',');
+    let intPart = parts[0].replace(/\./g,'');
+    if(intPart && intPart!=='-'){ intPart = parseInt(intPart,10).toLocaleString('id-ID'); }
+    this.value = intPart + (parts[1]!==undefined? (','+parts[1].replace(/\./g,'').slice(0,2)) : '');
+  });
+}
+window.addEventListener('DOMContentLoaded',()=>{
+  document.querySelectorAll('input.currency').forEach(inp=>{ formatCurrencyInput(inp); });
+});
+</script>
+</body>
+</html>

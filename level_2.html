@@ -1,0 +1,626 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Level 2 – Coffee Shop Inc (IDR Bulanan)</title>
+<style>
+  :root{
+    --bg:#ffffff; --ink:#1e3a8a; --muted:#f1f5f9; --panel:#e2e8f0; --line:#cbd5e1;
+    --accent:#2563eb; --ok:#16a34a; --bad:#dc2626; --warn:#f59e0b;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:#ffffff;color:var(--ink);font-family:Inter,system-ui,Segoe UI,Roboto,Arial}
+  header{position:sticky;top:0;z-index:40;background:#ffffff;border-bottom:2px solid var(--line);} 
+  .hd{display:flex;gap:14px;align-items:center;padding:14px 18px}
+  .brand img{width:auto;height:40px;object-fit:contain}
+  h1{margin:0;font-size:18px;font-weight:800;color:#1e3a8a}
+  .wrap{display:grid;grid-template-columns:280px 1fr;min-height:calc(100vh - 64px)}
+  nav{border-right:1px solid var(--line);background:var(--muted)}
+  .nav{display:flex;flex-direction:column;padding:10px}
+  .n{padding:10px 12px;margin:6px 0;border:1px solid var(--line);border-radius:10px;cursor:pointer;background:#ffffff;font-size:13px;color:#1e3a8a;font-weight:600;text-align:left}
+  .n.active{background:#2563eb;color:#ffffff;border-color:#1d4ed8}
+  main{padding:18px;background:#f8fafc}
+  .card{background:#ffffff;border:1px solid var(--line);border-radius:16px;box-shadow:0 4px 10px rgba(0,0,0,.05);color:#1e3a8a}
+  .panel{padding:16px}
+  .grid{display:grid;gap:12px}
+  .g2{grid-template-columns:1fr 1fr}
+  .g3{grid-template-columns:1fr 1fr 1fr}
+  .g4{grid-template-columns:repeat(4,1fr)}
+  .g5{grid-template-columns:repeat(5,1fr)}
+  label{display:block;font-size:12px;opacity:.9;margin-bottom:6px}
+  input,select{width:100%;padding:10px;border-radius:10px;border:1px solid var(--line);
+               background:#ffffff;color:#1e3a8a;font-variant-numeric:tabular-nums}
+  input.currency{text-align:right}
+  .btn{display:inline-block;padding:10px 14px;border-radius:12px;border:1px solid #2563eb;cursor:pointer;font-weight:700}
+  .btn.primary{background:var(--accent);color:#ffffff}
+  .btn.ghost{background:#f1f5f9;color:#1e3a8a}
+  .hint{font-size:12px;opacity:.85}
+  .kpi{display:grid;grid-template-columns:repeat(5,1fr);gap:10px}
+  .k{background:var(--muted);border:1px solid var(--line);border-radius:12px;padding:12px}
+  .k .lb{font-size:11px;opacity:.85}
+  .k .vl{font-weight:800;font-size:18px;margin-top:4px;color:#1e3a8a}
+  table{width:100%;border-collapse:collapse}
+  th,td{border-bottom:1px solid var(--line);padding:10px;text-align:right}
+  th:first-child,td:first-child{text-align:left}
+  .chart{height:240px;display:flex;align-items:flex-end;gap:6px;padding:10px 12px;border-top:1px dashed var(--line)}
+  .bar{width:calc(100%/12 - 6px);background:linear-gradient(180deg,#60a5fa,#1e3a8a);border-radius:6px 6px 0 0}
+  .bar.neg{background:linear-gradient(180deg,#fca5a5,#dc2626)}
+  .line{height:240px;position:relative;padding:10px 12px;border-top:1px dashed var(--line)}
+  .dot{position:absolute;width:8px;height:8px;border-radius:50%;background:#1e3a8a;transform:translate(-50%,-50%)}
+  .path{position:absolute;height:2px;background:#2563eb;transform-origin:left center}
+  .stars{display:flex;gap:4px}
+  .star{width:14px;height:14px;clip-path:polygon(50% 0%,61% 35%,98% 35%,68% 57%,79% 91%,50% 70%,21% 91%,32% 57%,2% 35%,39% 35%);
+        background:#cbd5e1}
+  .star.on{background:#2563eb}
+  .pill{display:inline-block;padding:4px 8px;border-radius:999px;border:1px solid var(--line);font-size:11px;background:#e0f2fe;color:#1e3a8a}
+  .flex{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+  .badge{font-size:11px;padding:4px 8px;border:1px solid var(--line);border-radius:999px;background:#eef2ff;color:#1e3a8a}
+  .sub{font-weight:700;margin:16px 0 6px}
+  .sep{height:1px;background:var(--line);margin:8px 0}
+</style>
+</head>
+<body>
+<header>
+  <div class="hd">
+    <div class="brand">
+      <img src="logo.png" alt="BBS Logo" />
+    </div>
+    <div>
+      <h1>Business Essentials – Coffee Shop Inc (Level 2, Bulanan, IDR)</h1>
+      <div class="hint">Level 2 menambahkan: 2 produk (Regular & Premium), kapasitas & antrian, kompetisi, inventori & waste, PPN, serta opsi investasi mesin (CAPEX).</div>
+    </div>
+  </div>
+</header>
+<div class="wrap">
+  <nav>
+    <div class="nav">
+      <button class="n active" data-page="welcome">Welcome</button>
+      <button class="n" data-page="market">Market</button>
+      <button class="n" data-page="products">Products</button>
+      <button class="n" data-page="hr_ops">HR & Ops</button>
+      <button class="n" data-page="finance">Finance</button>
+      <button class="n" data-page="decisions">Decisions</button>
+      <button class="n" data-page="dashboard">Dashboard</button>
+      <button class="n" data-page="glossary">Glossary</button>
+    </div>
+  </nav>
+  <main>
+    <!-- WELCOME -->
+    <section id="welcome" class="card panel">
+      <h2>Welcome</h2>
+      <p>Anda masih mengelola <b>1 coffee shop</b> selama <b>12 bulan</b> dengan tujuan memaksimalkan <b>laba kumulatif</b>. Pada Level 2, Anda mengatur <b>dua lini produk</b> (Regular & Premium), memperhatikan <b>kapasitas staf/mesin</b>, <b>antrian</b> yang dapat menimbulkan <i>lost sales</i>, <b>kompetisi</b> (price index), <b>inventori & waste</b>, <b>PPN</b>, serta <b>investasi mesin</b> untuk meningkatkan throughput. <span class="pill">IDR</span> <span class="pill">Bulanan</span></p>
+      <div class="flex">
+        <button class="btn primary" onclick="go('market')">Mulai ke Market</button>
+        <span class="hint">Tip: Jaga keseimbangan harga–kualitas–waktu tunggu. Kapasitas yang rendah memperpanjang antrian dan menurunkan kepuasan pelanggan.</span>
+      </div>
+    </section>
+
+    <!-- MARKET -->
+    <section id="market" class="card panel" style="display:none">
+      <h2>Market (Lokasi, Jam, Kompetisi)</h2>
+      <div class="grid g3">
+        <div>
+          <label>Lokasi Toko</label>
+          <select id="loc">
+            <option value="city">City Center (sewa tinggi, premium)</option>
+            <option value="suburb">Suburb (sewa sedang, keluarga)</option>
+            <option value="campus">Campus (sewa rendah, sensitif harga)</option>
+          </select>
+        </div>
+        <div>
+          <label>Jam Operasional</label>
+          <select id="hours">
+            <option value="day">Siang saja</option>
+            <option value="extended">Siang + Malam</option>
+          </select>
+        </div>
+        <div>
+          <label>Kompetitor Price Index (1.00 = normal)</label>
+          <input id="compIdx" type="text" class="currency" value="1.00" />
+        </div>
+      </div>
+      <p class="hint">Kompetitor price index &lt; 1 berarti kompetitor lebih murah sehingga permintaan Anda turun. &gt; 1 berarti kompetitor lebih mahal.</p>
+      <button class="btn primary" onclick="go('products')">Lanjut ke Products</button>
+    </section>
+
+    <!-- PRODUCTS -->
+    <section id="products" class="card panel" style="display:none">
+      <h2>Products (Regular & Premium)</h2>
+      <div class="grid g2">
+        <div class="card panel">
+          <div class="sub">Regular</div>
+          <div class="grid g2">
+            <div>
+              <label>Harga Regular (IDR)</label>
+              <input id="p_reg" type="text" class="currency" value="25.000" />
+            </div>
+            <div>
+              <label>COGS Regular (IDR)</label>
+              <input id="c_reg" type="text" class="currency" value="9.000" />
+            </div>
+          </div>
+        </div>
+        <div class="card panel">
+          <div class="sub">Premium</div>
+          <div class="grid g2">
+            <div>
+              <label>Harga Premium (IDR)</label>
+              <input id="p_pre" type="text" class="currency" value="35.000" />
+            </div>
+            <div>
+              <label>COGS Premium (IDR)</label>
+              <input id="c_pre" type="text" class="currency" value="13.000" />
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="grid g3" style="margin-top:10px">
+        <div>
+          <label>Campuran Produk Premium (%)</label>
+          <input id="mix_pre" type="text" class="currency" value="35" />
+        </div>
+        <div>
+          <label>Elastisitas Harga Regular</label>
+          <input id="e_reg" type="text" class="currency" value="-1.2" />
+        </div>
+        <div>
+          <label>Elastisitas Harga Premium</label>
+          <input id="e_pre" type="text" class="currency" value="-1.0" />
+        </div>
+      </div>
+      <p class="hint">Campuran Premium menentukan proporsi penjualan premium. Elastisitas &lt; 0: semakin negatif → semakin sensitif terhadap kenaikan harga.</p>
+      <button class="btn primary" onclick="go('hr_ops')">Lanjut ke HR & Ops</button>
+    </section>
+
+    <!-- HR & OPS -->
+    <section id="hr_ops" class="card panel" style="display:none">
+      <h2>HR & Operations (Kapasitas & Service)</h2>
+      <div class="grid g4">
+        <div>
+          <label>Gaji / orang / bulan (IDR)</label>
+          <input id="salary" type="text" class="currency" value="4.500.000" />
+        </div>
+        <div>
+          <label>Training / orang / bulan (IDR)</label>
+          <input id="training" type="text" class="currency" value="300.000" />
+        </div>
+        <div>
+          <label>Jumlah Staf (org)</label>
+          <input id="staff" type="text" class="currency" value="4" />
+        </div>
+        <div>
+          <label>Estimasi Penjualan / hari (cangkir)</label>
+          <input id="salesPerDay" type="text" class="currency" value="160" />
+        </div>
+      </div>
+      <div class="grid g3" style="margin-top:10px">
+        <div>
+          <label>Kapasitas per Staf per Jam (cangkir)</label>
+          <input id="capPerStaff" type="text" class="currency" value="18" />
+        </div>
+        <div>
+          <label>Kecepatan Mesin (cangkir/jam/mesin)</label>
+          <input id="capMachine" type="text" class="currency" value="28" />
+        </div>
+        <div>
+          <label>Jumlah Mesin</label>
+          <input id="nMachine" type="text" class="currency" value="1" />
+        </div>
+      </div>
+      <p class="hint">Throughput per jam = min(staf×kapasitas staf, mesin×kapasitas mesin). Kekurangan kapasitas → antrian → lost sales dan kepuasan turun.</p>
+      <button class="btn primary" onclick="go('finance')">Lanjut ke Finance</button>
+    </section>
+
+    <!-- FINANCE -->
+    <section id="finance" class="card panel" style="display:none">
+      <h2>Finance (Promo, Sewa, PPN, CAPEX)</h2>
+      <div class="grid g4">
+        <div>
+          <label>Promosi / bulan (IDR)</label>
+          <input id="promo" type="text" class="currency" value="4.000.000" />
+        </div>
+        <div>
+          <label>Sewa / bulan (IDR)</label>
+          <input id="rentOverride" type="text" class="currency" value="0" />
+          <div class="hint">Opsional, kosongkan untuk pakai default lokasi</div>
+        </div>
+        <div>
+          <label>PPN 11% Dikenakan?</label>
+          <select id="ppnOn">
+            <option value="yes">Ya (aktif)</option>
+            <option value="no">Tidak</option>
+          </select>
+        </div>
+        <div>
+          <label>Overhead (admin & depresiasi) / bulan</label>
+          <input id="overhead" type="text" class="currency" value="2.000.000" />
+        </div>
+      </div>
+      <div class="card panel" style="margin-top:10px">
+        <div class="sub">Investasi Mesin (CAPEX Opsional)</div>
+        <div class="grid g5">
+          <div>
+            <label>Upgrade Mesin di Bulan</label>
+            <input id="capexMonth" type="text" class="currency" value="6" />
+          </div>
+          <div>
+            <label>Biaya CAPEX (IDR)</label>
+            <input id="capexCost" type="text" class="currency" value="25.000.000" />
+          </div>
+          <div>
+            <label>Tambahan Mesin (+unit)</label>
+            <input id="capexAddMachine" type="text" class="currency" value="1" />
+          </div>
+          <div>
+            <label>Pendanaan Hutang? (bunga %/thn)</label>
+            <input id="loanRate" type="text" class="currency" value="12" />
+          </div>
+          <div>
+            <label>Tenor Hutang (bulan)</label>
+            <input id="loanTenor" type="text" class="currency" value="12" />
+          </div>
+        </div>
+        <p class="hint">Jika CAPEX diambil, biaya CAPEX dibayar di bulan tersebut. Jika dibiayai hutang, akan muncul cicilan pokok+bunganya (annuity) selama tenor.</p>
+      </div>
+      <button class="btn primary" onclick="go('decisions')" style="margin-top:12px">Lanjut ke Decisions</button>
+    </section>
+
+    <!-- DECISIONS -->
+    <section id="decisions" class="card panel" style="display:none">
+      <h2>Decisions (Jalankan Simulasi)</h2>
+      <div class="grid g3">
+        <div>
+          <label>Sales Seasonality (12 bln, pisahkan koma, 1.00=normal)</label>
+          <input id="season" type="text" value="1.00,0.98,0.99,1.00,1.02,1.05,1.07,1.05,1.03,1.02,1.00,1.08" />
+        </div>
+        <div>
+          <label>Promo Efektivitas (alpha)</label>
+          <input id="promoAlpha" type="text" class="currency" value="0.20" />
+        </div>
+        <div>
+          <label>Efek Training ke Layanan (0–0.3)</label>
+          <input id="trainAlpha" type="text" class="currency" value="0.18" />
+        </div>
+      </div>
+      <div class="flex" style="margin-top:12px">
+        <button class="btn primary" onclick="runSim()">Jalankan Simulasi 12 Bulan</button>
+        <button class="btn ghost" onclick="resetAll()">Reset</button>
+        <span class="hint">Output: penjualan per produk, kapasitas & lost sales, PPN, arus kas, profit kumulatif, dan rating kepuasan.</span>
+      </div>
+    </section>
+
+    <!-- DASHBOARD -->
+    <section id="dashboard" class="card panel" style="display:none">
+      <h2>Dashboard</h2>
+      <div class="kpi" style="margin-bottom:12px">
+        <div class="k"><div class="lb">Total Penjualan (12 bln)</div><div class="vl" id="k_rev">IDR 0</div></div>
+        <div class="k"><div class="lb">Total Biaya (12 bln)</div><div class="vl" id="k_cost">IDR 0</div></div>
+        <div class="k"><div class="lb">Laba/Rugi Neto (12 bln)</div><div class="vl" id="k_profit">IDR 0</div></div>
+        <div class="k"><div class="lb">Margin Bersih</div><div class="vl" id="k_margin">0%</div></div>
+        <div class="k"><div class="lb">Kas Akhir</div><div class="vl" id="k_cash">IDR 0</div></div>
+      </div>
+
+      <div class="grid g2" style="margin-bottom:8px">
+        <div class="k">
+          <div class="lb">Employee Satisfaction</div>
+          <div class="stars" id="empStars"></div>
+        </div>
+        <div class="k">
+          <div class="lb">Customer Satisfaction</div>
+          <div class="stars" id="custStars"></div>
+        </div>
+      </div>
+
+      <div class="lb" style="margin:8px 0 0 2px">Grafik Profit Bulanan</div>
+      <div id="chart" class="chart"></div>
+      <div class="lb" style="margin:8px 0 0 2px">Grafik Profit Kumulatif</div>
+      <div id="cumChart" class="chart"></div>
+
+      <div class="panel" style="padding-left:0;padding-right:0">
+        <div style="overflow:auto">
+          <table id="tbl"><thead>
+            <tr>
+              <th>Bulan</th>
+              <th>Unit Regular</th>
+              <th>Unit Premium</th>
+              <th>Unit Hilang (Antrian)</th>
+              <th>Pendapatan</th>
+              <th>PPN Keluaran</th>
+              <th>Total Biaya</th>
+              <th>Laba Bersih</th>
+              <th>Profit Kumulatif</th>
+              <th>Kas Akhir</th>
+            </tr></thead><tbody></tbody></table>
+        </div>
+      </div>
+    </section>
+
+    <!-- GLOSSARY -->
+    <section id="glossary" class="card panel" style="display:none">
+      <h2>Glossary (Level 2)</h2>
+      <ul>
+        <li><b>Lost sales:</b> permintaan yang tidak terpenuhi karena keterbatasan kapasitas.</li>
+        <li><b>Kompetitor price index:</b> indeks relatif harga pesaing yang memengaruhi permintaan Anda.</li>
+        <li><b>Inventori & waste:</b> asumsi waste 2% dari produksi bulanan (bisa disesuaikan di kode).</li>
+        <li><b>PPN:</b> jika aktif, 11% dari penjualan sebagai pajak keluaran, disederhanakan tanpa kredit pajak masukan.</li>
+        <li><b>CAPEX & hutang:</b> investasi menambah mesin (kapasitas). Jika dibiayai hutang → cicilan annuity bulanan.</li>
+      </ul>
+    </section>
+  </main>
+</div>
+
+<script>
+(function(){
+  const fmt = v => new Intl.NumberFormat('id-ID', {style:'currency', currency:'IDR', maximumFractionDigits:0}).format(v||0);
+  const clamp=(x,a,b)=>Math.max(a,Math.min(b,x));
+  const toNum = (id)=>{ const el=document.getElementById(id); if(!el) return 0; const s=el.value.replaceAll('.', '').replace(/,/g,'.').replace(/[^0-9.\-]/g,''); return s?parseFloat(s):0; };
+
+  // Default parameter lokasi (mengacu gaya Level 1)
+  const LOC={
+    city:{ name:'City', rent:55000000, refPriceReg:26000, refPricePre:32000, baseDemand:10000, priceElasticityReg:-1.2, priceElasticityPre:-1.0, evening:1.10, salaryMarket:4500000 },
+    suburb:{ name:'Suburb', rent:22000000, refPriceReg:23000, refPricePre:30000, baseDemand:7000, priceElasticityReg:-1.2, priceElasticityPre:-1.0, evening:1.05, salaryMarket:4200000 },
+    campus:{ name:'Campus', rent:8000000,  refPriceReg:20000, refPricePre:27000, baseDemand:9000, priceElasticityReg:-1.6, priceElasticityPre:-1.2, evening:1.08, salaryMarket:4000000 }
+  };
+
+  // Routing
+  const pages=['welcome','market','products','hr_ops','finance','decisions','dashboard','glossary'];
+  const buttons=document.querySelectorAll('.n');
+  function go(id){
+    pages.forEach(p=>{
+      const sec=document.getElementById(p);
+      if(sec) sec.style.display = (p===id)?'block':'none';
+      buttons.forEach(b=>{ if(b.dataset.page===id) b.classList.add('active'); else if(b.dataset.page) b.classList.remove('active');});
+    });
+  }
+  window.go=go;
+  buttons.forEach(b=> b.addEventListener('click',()=>go(b.dataset.page)));
+
+  function stars(el,score){
+    el.innerHTML='';
+    const n = clamp(Math.round(score),0,5);
+    for(let i=0;i<5;i++){
+      const s=document.createElement('div'); s.className='star'+(i<n?' on':'');
+      el.appendChild(s);
+    }
+  }
+
+  function annuityPayment(P, r_annual, n_month){
+    if(P<=0 || n_month<=0) return 0;
+    const r = (r_annual/100)/12;
+    if(r===0) return P/n_month;
+    return P * (r * Math.pow(1+r, n_month)) / (Math.pow(1+r, n_month) - 1);
+  }
+
+  function runSim(){
+    const L = LOC[ document.getElementById('loc').value ];
+    const hours = document.getElementById('hours').value;
+    const compIdx = Math.max(0.7, Math.min(1.3, toNum('compIdx')));
+
+    // Produk
+    const p_reg = toNum('p_reg');
+    const c_reg = toNum('c_reg');
+    const p_pre = toNum('p_pre');
+    const c_pre = toNum('c_pre');
+    const mix_pre = clamp(toNum('mix_pre')/100, 0, 1);
+    const e_reg = (toNum('e_reg')||L.priceElasticityReg);
+    const e_pre = (toNum('e_pre')||L.priceElasticityPre);
+
+    // HR & Ops
+    const salary = toNum('salary');
+    const training = toNum('training');
+    const staff = Math.max(1, Math.round(toNum('staff')));
+    const salesPerDay = Math.max(0, toNum('salesPerDay'));
+    const capPerStaff = Math.max(5, toNum('capPerStaff'));
+    const capMachine = Math.max(5, toNum('capMachine'));
+    let nMachine = Math.max(1, Math.round(toNum('nMachine')));
+
+    // Finance
+    const promo = toNum('promo');
+    const rentOverride = toNum('rentOverride');
+    const overhead = toNum('overhead');
+    const ppnOn = document.getElementById('ppnOn').value==='yes';
+
+    // CAPEX
+    const capexMonth = Math.max(1, Math.min(12, Math.round(toNum('capexMonth')||0)));
+    const capexCost = Math.max(0, toNum('capexCost'));
+    const capexAddMachine = Math.max(0, Math.round(toNum('capexAddMachine')));
+    const loanRate = Math.max(0, toNum('loanRate'));
+    const loanTenor = Math.max(0, Math.round(toNum('loanTenor')));
+
+    const season = document.getElementById('season').value.split(',').map(s=>parseFloat(s.trim())||1);
+    while(season.length<12) season.push(1);
+    if(season.length>12) season.length=12;
+
+    const promoAlpha = Math.max(0, toNum('promoAlpha'));
+    const trainAlpha = clamp(toNum('trainAlpha'), 0, 0.3);
+
+    // Demand baseline
+    const baseMonthly = salesPerDay>0 ? salesPerDay*30 : L.baseDemand;
+
+    // Hours effect
+    const fHours = (hours==='extended') ? L.evening : 1.0;
+
+    // Salary & training quality multipliers
+    const fSalary = clamp(0.8 + 0.30 * (salary / L.salaryMarket), 0.8, 1.25);
+    const fTraining = clamp(0.9 + (training/400000)*trainAlpha, 0.9, 1.25);
+
+    // Competitor index (jika kompetitor lebih murah → permintaan turun)
+    const fComp = clamp(1 + (1 - compIdx)*0.8, 0.7, 1.3);
+
+    // Promo effect
+    const promoRef = 4000000; // skala referensi
+    const fPromo = 1 + promoAlpha * ((promo / (promoRef||1)) - 1);
+
+    // Price effects per product
+    const fPriceReg = Math.pow(p_reg / L.refPriceReg, e_reg);
+    const fPricePre = Math.pow(p_pre / L.refPricePre, e_pre);
+
+    // Satisfaction drivers (0–5)
+    const staffingNeed = (hours==='extended')?4:3;
+    const loadRatio = staffingNeed / Math.max(1,staff);
+    const empSat = clamp( 2.5 + 2.0*(salary/L.salaryMarket - 1) + 0.8*(training/400000 - 1) - 0.6*(loadRatio-1), 0, 5);
+
+    const priceDeltaR = (p_reg - L.refPriceReg) / L.refPriceReg;
+    const priceDeltaP = (p_pre - L.refPricePre) / L.refPricePre;
+
+    // Quality proxy: premium sedikit menaikkan kepuasan, tapi harga tinggi menurunkan
+    const quality = 0.2 + 0.15*mix_pre; 
+
+    // Simulasi
+    const rows=[]; let cum=0, totalRev=0, totalCost=0, maxAbs=1, cash=0, maxCum=1;
+
+    // Loan calc if use debt for CAPEX
+    const payLoan = (capexCost>0 && loanTenor>0) ? annuityPayment(capexCost, loanRate, loanTenor) : 0;
+
+    for(let m=0;m<12;m++){
+      // CAPEX event
+      let capexOut = 0, loanPay = 0;
+      if(capexCost>0 && (m+1)===capexMonth){
+        if(loanTenor>0){
+          // dibiayai hutang: tidak keluar capex tunai di awal (penyederhanaan), mulai cicilan bulan ini
+          loanPay = payLoan;
+        } else {
+          // tunai
+          capexOut = capexCost;
+        }
+        nMachine += capexAddMachine;
+      }
+
+      if(loanTenor>0 && (m+1)>=capexMonth && (m+1) < capexMonth + loanTenor){
+        loanPay = payLoan;
+      }
+
+      // Demand potential sebelum kapasitas
+      const seasonF = season[m] || 1;
+      const demandBase = baseMonthly * seasonF * fHours * fSalary * fTraining * fPromo * fComp;
+
+      // Bagi menjadi premium vs regular oleh mix, lalu efek harga masing-masing
+      let demandPre = demandBase * mix_pre * fPricePre;
+      let demandReg = demandBase * (1 - mix_pre) * fPriceReg;
+
+      // Kapasitas bulanan (jam operasi kira-kira 10 jam/hari di siang; +5 jam jika extended)
+      const hoursPerDay = (hours==='extended')?15:10;
+      const capPerHour = Math.min(staff*capPerStaff, nMachine*capMachine);
+      const monthlyCap = Math.max(0, Math.round(capPerHour * hoursPerDay * 30));
+
+      // Total demand & capacity split proporsional
+      let totalDemand = Math.max(0, Math.round(demandReg + demandPre));
+      let unitsServed = Math.min(totalDemand, monthlyCap);
+      let lost = Math.max(0, totalDemand - unitsServed);
+
+      // Alokasikan served ke masing-masing produk proporsional
+      let servedPre = Math.round(unitsServed * (demandPre/(totalDemand||1)));
+      let servedReg = unitsServed - servedPre;
+
+      // Inventori & waste sederhana: 2% dari produksi/serving
+      const wasteRate = 0.02;
+      const wasteReg = Math.round(servedReg * wasteRate);
+      const wastePre = Math.round(servedPre * wasteRate);
+
+      // Revenue dan PPN (output tax)
+      const revenue = servedReg*p_reg + servedPre*p_pre;
+      const ppn = ppnOn ? 0.11*revenue : 0;
+
+      // Biaya variabel (COGS termasuk waste), HR, sewa, promo, overhead, loan, capex
+      const cogs = (servedReg+wasteReg)*c_reg + (servedPre+wastePre)*c_pre;
+
+      // Sewa
+      const rent = (toNum('rentOverride')>0 ? toNum('rentOverride') : L.rent);
+
+      const cost = cogs + rent + (staff*salary) + (staff*training) + promo + overhead + loanPay + capexOut + ppn; // ppn dibukukan sebagai kewajiban (mengurangi laba bersih)
+      const profit = revenue - cost;
+
+      cum += profit; cash += (revenue - (cost - ppn)); // asumsi PPN disetor terpisah; kas menerima penjualan bruto tetapi harus menyisihkan ppn (di sini kas akhir tetap memperhitungkan ppn keluar)
+      maxAbs = Math.max(maxAbs, Math.abs(profit));
+      maxCum = Math.max(maxCum, Math.abs(cum));
+      totalRev += revenue; totalCost += cost;
+
+      // Customer satisfaction dipengaruhi oleh empSat, harga relatif, kualitas, dan lost ratio
+      const waitPenalty = clamp(lost / Math.max(1, totalDemand), 0, 0.7); // 0..0.7
+      const custSat = clamp( 2.0 + 0.6*empSat - 1.0*(0.5*priceDeltaR+0.5*priceDeltaP) + quality - 1.5*waitPenalty, 0, 5);
+
+      rows.push({
+        month:m+1,
+        reg:servedReg, pre:servedPre, lost,
+        revenue, ppn, cost, profit, cum, cash,
+        empSat, custSat
+      });
+    }
+
+    // KPI
+    document.getElementById('k_rev').textContent = fmt(totalRev);
+    document.getElementById('k_cost').textContent = fmt(totalCost);
+    document.getElementById('k_profit').textContent = fmt(cum);
+    document.getElementById('k_margin').textContent = (totalRev>0? (100*cum/totalRev).toFixed(1):0)+"%";
+    document.getElementById('k_cash').textContent = fmt(rows[rows.length-1].cash);
+
+    // Stars (pakai nilai bulan terakhir sebagai proxy)
+    stars(document.getElementById('empStars'), rows[rows.length-1].empSat);
+    stars(document.getElementById('custStars'), rows[rows.length-1].custSat);
+
+    // Chart profit bulanan
+    const chart=document.getElementById('chart'); chart.innerHTML='';
+    rows.forEach(r=>{
+      const b=document.createElement('div'); b.className='bar'+(r.profit<0?' neg':'');
+      b.style.height = (10 + Math.round(200*Math.abs(r.profit)/maxAbs))+'px';
+      b.title = `Bulan ${r.month}: ${fmt(r.profit)}`;
+      chart.appendChild(b);
+    });
+
+    // Chart kumulatif (bars positif/negatif)
+    const cchart=document.getElementById('cumChart'); cchart.innerHTML='';
+    rows.forEach(r=>{
+      const b=document.createElement('div'); b.className='bar'+(r.cum<0?' neg':'');
+      b.style.height = (10 + Math.round(200*Math.abs(r.cum)/maxCum))+'px';
+      b.title = `Kumulatif s/d Bulan ${r.month}: ${fmt(r.cum)}`;
+      cchart.appendChild(b);
+    });
+
+    // Table
+    const tb=document.querySelector('#tbl tbody'); tb.innerHTML='';
+    rows.forEach(r=>{
+      const tr=document.createElement('tr');
+      tr.innerHTML = `<td>Bulan ${r.month}</td>
+        <td>${r.reg.toLocaleString('id-ID')}</td>
+        <td>${r.pre.toLocaleString('id-ID')}</td>
+        <td style="color:${r.lost>0?'#f59e0b':'#1e3a8a'}">${r.lost.toLocaleString('id-ID')}</td>
+        <td>${fmt(r.revenue)}</td>
+        <td>${fmt(r.ppn)}</td>
+        <td>${fmt(r.cost)}</td>
+        <td style="color:${r.profit>=0?'#34d399':'#f87171'}">${fmt(r.profit)}</td>
+        <td>${fmt(r.cum)}</td>
+        <td>${fmt(r.cash)}</td>`;
+      tb.appendChild(tr);
+    });
+
+    go('dashboard');
+  }
+  window.runSim=runSim;
+
+  function resetAll(){ window.location.reload(); }
+  window.resetAll=resetAll;
+})();
+</script>
+<script>
+// Formatter angka ribuan dan desimal sederhana untuk input.currency
+function formatCurrencyInput(input){
+  input.addEventListener('input', function(){
+    // izinkan angka, titik sebagai thousand sep, koma sebagai decimal (diterjemahkan saat toNum)
+    let val = this.value.replace(/[^0-9.,]/g,'');
+    // auto tambahkan titik sebagai pemisah ribuan untuk bagian integer
+    const parts = val.split(',');
+    let intPart = parts[0].replace(/\./g,'');
+    if(intPart){ intPart = parseInt(intPart,10).toLocaleString('id-ID'); }
+    this.value = intPart + (parts[1]!==undefined? (','+parts[1].replace(/\./g,'').slice(0,2)) : '');
+  });
+}
+
+window.addEventListener('DOMContentLoaded',()=>{
+  document.querySelectorAll('input.currency').forEach(inp=>{
+    formatCurrencyInput(inp);
+  });
+});
+</script>
+</body>
+</html>
